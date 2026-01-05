@@ -10,37 +10,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RegisterUserValidationSchema } from "@/schemas/RegisterValidation";
-import { registerUser } from "@/services/AuthServices";
+import { LoginUserValidationSchema } from "@/schemas/LoginValidation";
+import { LoginUser } from "@/services/AuthServices";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useEffect } from "react";
+
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const form = useForm({
-    resolver: zodResolver(RegisterUserValidationSchema),
-    mode: "onChange",
-    reValidateMode: "onChange",
+    resolver: zodResolver(LoginUserValidationSchema),
   });
   const {
     formState: { isSubmitting },
   } = form;
-  const password = form.watch("password");
-  const confirmPassword = form.watch("confirmPassword");
-  useEffect(() => {
-    if (confirmPassword) {
-      form.trigger("confirmPassword");
-    }
-  }, [password, confirmPassword, form]);
+
   const handleRegisterForm: SubmitHandler<FieldValues> = async (data) => {
+    console.log(data);
     try {
-      const res = await registerUser({
-        name: data?.name,
-        email: data?.email,
-        password: data?.password,
-      });
+      const res = await LoginUser(data);
       if (res?.success) {
         toast.success(res?.message, {
           position: "top-right",
@@ -68,7 +58,7 @@ const RegisterForm = () => {
         <Logo width={80} height={30}></Logo>
 
         <div>
-          <h1 className="text-4xl font-bold">Sign Up</h1>
+          <h1 className="text-4xl font-bold">Sign In</h1>
           <p className="font-extralight">
             Enter your email and phone number to sign up.
           </p>
@@ -78,25 +68,6 @@ const RegisterForm = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleRegisterForm)}>
             <div className="space-y-3">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-12 rounded-full focus-visible:ring-[1px]"
-                        placeholder="Enter your name"
-                        {...field}
-                        type="text"
-                        value={field?.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -135,31 +106,9 @@ const RegisterForm = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-12 rounded-full focus-visible:ring-[1px]"
-                        placeholder="Enter your password"
-                        {...field}
-                        type="password"
-                        value={field?.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                disabled={password !== confirmPassword}
-                type="submit"
-                className="w-full rounded-full"
-              >
-                {isSubmitting ? "Registering..." : "Register"}
+
+              <Button type="submit" className="w-full rounded-full">
+                {isSubmitting ? "Loging..." : "Login"}
               </Button>
             </div>
           </form>
@@ -167,7 +116,7 @@ const RegisterForm = () => {
         <p className="mt-5 text-sm text-center text-[#01031380]">
           Already have an account?{" "}
           <span className="text-[#010313] text-md">
-            <Link href={"/login"}>SignIn</Link>
+            <Link href={"/register"}>SigUp</Link>
           </span>
         </p>
       </div>
@@ -175,4 +124,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;
