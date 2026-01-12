@@ -1,8 +1,28 @@
+"use client";
 import Logo from "@/assets/svgs/Logo";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useUser } from "@/context/UserContext";
+import { logoutUser } from "@/services/AuthServices";
+import { Heart, LogOut, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 
 const Navbar = () => {
+  const { user, setIsLoading } = useUser();
+  console.log(user);
+  console.log("render");
+  const handleLogout = () => {
+    logoutUser();
+    setIsLoading(false);
+  };
   return (
     <header className="border-b w-full">
       <div className="container flex justify-between items-center mx-auto h-16 px-3">
@@ -24,6 +44,32 @@ const Navbar = () => {
           <Button variant="outline" className="rounded-full p-0 size-10">
             <ShoppingBag />
           </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>User</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href={"/login"}>
+              <Button variant="outline" className="rounded-full cursor-pointer">
+                Login
+              </Button>
+            </Link>
+          )}
         </nav>
       </div>
     </header>

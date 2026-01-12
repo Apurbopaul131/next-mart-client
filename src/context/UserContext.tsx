@@ -18,14 +18,14 @@ const UserContext = createContext<IUserContext | undefined>(undefined);
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log("user from user context", user);
+  console.log(isLoading);
   useEffect(() => {
     const handleUser = async () => {
       const user = await getCurrentUser();
-      if (user) {
-        setUser(user as IUser);
-        setIsLoading(false);
-      }
+      setUser(user as IUser | null);
+      setIsLoading(true);
+      console.log("run handle user function");
     };
     handleUser();
   }, [isLoading]);

@@ -53,10 +53,22 @@ export const LoginUser = async (data: FieldValues) => {
 };
 
 export const getCurrentUser = async () => {
-  const accessToken = (await cookies()).get("accessToken")!.value;
-  let decodedData = null;
-  if (accessToken) {
-    decodedData = jwtDecode(accessToken);
+  const coookieStore = await cookies();
+  const tokenCookie = coookieStore.get("accessToken");
+  if (!tokenCookie) {
+    return null;
   }
-  return decodedData;
+  const accessToken = tokenCookie.value;
+  try {
+    const decodedData = jwtDecode(accessToken);
+    return decodedData;
+  } catch (err: any) {
+    console.error("Invalid token!");
+    return null;
+  }
+};
+
+export const logoutUser = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
 };

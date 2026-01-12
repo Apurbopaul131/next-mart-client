@@ -53,8 +53,8 @@ const LoginForm = () => {
     }
   };
   return (
-    <div className="border-2 bg-[#f6f6f6] p-9 border-none rounded-2xl">
-      <div className="flex items-center gap-4">
+    <div className="border-2 bg-[#f6f6f6] p-9 rounded-2xl">
+      <div className="flex items-center space-x-4">
         <Logo width={80} height={30}></Logo>
 
         <div>
