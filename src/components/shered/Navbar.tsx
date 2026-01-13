@@ -18,17 +18,17 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 const Navbar = () => {
-  const { user, setIsLoading } = useUser();
+  const { user, isLoading, setIsLoading } = useUser();
   const pathname = usePathname();
   const router = useRouter();
-  console.log(user);
-  console.log("render");
+
+  console.log("navbar component");
   const handleLogout = () => {
     logoutUser();
     if (protectedRoutes.some((route) => pathname.match(route))) {
       router.push("/");
     }
-    setIsLoading(false);
+    setIsLoading(!isLoading);
   };
   return (
     <header className="border-b w-full">

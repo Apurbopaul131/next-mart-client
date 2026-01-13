@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/context/UserContext";
 import { LoginUserValidationSchema } from "@/schemas/LoginValidation";
 import { LoginUser } from "@/services/AuthServices";
 
@@ -31,7 +32,8 @@ const LoginForm = () => {
   const {
     formState: { isSubmitting },
   } = form;
-
+  console.log("login form page");
+  const { isLoading, setIsLoading } = useUser();
   const handleRegisterForm: SubmitHandler<FieldValues> = async (data) => {
     try {
       const res = await LoginUser(data);
@@ -42,6 +44,7 @@ const LoginForm = () => {
             color: "green",
           },
         });
+        setIsLoading(!isLoading);
         //clear the form after register
         form.reset();
         if (redirectUrl) {

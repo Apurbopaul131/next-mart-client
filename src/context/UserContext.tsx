@@ -24,9 +24,9 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const handleUser = async () => {
       const user = await getCurrentUser();
       setUser(user as IUser | null);
-      setIsLoading(true);
-      console.log("run handle user function");
+      setIsLoading(false);
     };
+    console.log("run inside handle user function from context");
     handleUser();
   }, [isLoading]);
   return (

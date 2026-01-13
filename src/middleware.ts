@@ -3,7 +3,7 @@ import { getCurrentUser } from "./services/AuthServices";
 import { IUser } from "./types";
 const authRoutes = ["/login", "/register"];
 const roleBasedPrivateRoutes = {
-  user: ["/^/user/", "/^/create-shop/"],
+  user: ["/^/user/", "/^/create-shop/", "/user/dashboard"],
   admin: ["/^/admin/"],
 };
 export const middleware = async (request: NextRequest) => {
