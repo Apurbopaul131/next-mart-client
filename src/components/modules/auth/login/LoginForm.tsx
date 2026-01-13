@@ -15,11 +15,16 @@ import { LoginUser } from "@/services/AuthServices";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirectPath");
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(LoginUserValidationSchema),
   });
@@ -28,7 +33,6 @@ const LoginForm = () => {
   } = form;
 
   const handleRegisterForm: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
     try {
       const res = await LoginUser(data);
       if (res?.success) {
@@ -40,6 +44,11 @@ const LoginForm = () => {
         });
         //clear the form after register
         form.reset();
+        if (redirectUrl) {
+          router.push(`${redirectUrl}`);
+        } else {
+          router.push("/");
+        }
       } else {
         toast.error(res?.message, {
           position: "top-right",

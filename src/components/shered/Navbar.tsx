@@ -9,18 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { protectedRoutes } from "@/constants";
 import { useUser } from "@/context/UserContext";
 import { logoutUser } from "@/services/AuthServices";
 import { Heart, LogOut, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 const Navbar = () => {
   const { user, setIsLoading } = useUser();
+  const pathname = usePathname();
+  const router = useRouter();
   console.log(user);
   console.log("render");
   const handleLogout = () => {
     logoutUser();
+    if (protectedRoutes.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
     setIsLoading(false);
   };
   return (
