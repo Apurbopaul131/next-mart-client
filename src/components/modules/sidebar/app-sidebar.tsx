@@ -14,8 +14,14 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { protectedRoutes } from "@/constants";
+import { useUser } from "@/context/UserContext";
+import { logoutUser } from "@/services/AuthServices";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
 import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -61,6 +67,16 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, setIsLoading, isLoading } = useUser();
+  const pathname = usePathname();
+  const router = useRouter();
+  const handleLogout = async () => {
+    await logoutUser();
+    setIsLoading(!isLoading);
+    if (protectedRoutes.some((route) => route.match(pathname))) {
+      router.push("/");
+    }
+  };
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -83,7 +99,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <h1>Footer</h1>
+        <NavUser
+          user={{
+            name: user?.name,
+            email: user?.email,
+            avatar: "/avatars/shadcn.jpg",
+          }}
+          handleLogout={handleLogout}
+        ></NavUser>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
