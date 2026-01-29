@@ -29,8 +29,8 @@ const ImagePreviewer = ({
           className="relative w-36 h-36 rounded-md overflow-hidden border border-dashed border-gray-300"
         >
           <Image
-            width={500}
-            height={500}
+            width={300}
+            height={300}
             src={preview}
             alt={`Preview ${index + 1}`}
             className="object-cover w-full h-full"

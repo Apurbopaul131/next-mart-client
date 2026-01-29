@@ -22,7 +22,6 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  console.log("navbar component");
   const handleLogout = () => {
     logoutUser();
     if (protectedRoutes.some((route) => pathname.match(route))) {
@@ -63,7 +62,9 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                <Link href={"/user/dashboard"}>
+                  <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut />
                   <span>Logout</span>
