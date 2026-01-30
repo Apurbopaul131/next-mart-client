@@ -16,6 +16,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { CreateBrandValidationSchema } from "@/schemas/CreateBrandValidation";
+import { createBrandApi } from "@/services/brand";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import {
   Controller,
@@ -23,16 +26,71 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
+import { toast } from "sonner";
 
 const CreateBrandModal = () => {
+  const [error, setImageError] = useState<string | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreview, setImagePreview] = useState<string[]>([]);
-  const form = useForm();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const form = useForm({
+    resolver: zodResolver(CreateBrandValidationSchema.omit({ image: true })),
+  });
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      if (images.length === 0) {
+        console.log("hello");
+        toast.error("Image is required", {
+          position: "top-right",
+          style: {
+            color: "red",
+          },
+        });
+        return;
+      }
+      const payload = {
+        ...data,
+        image: images[0],
+      };
+      const validationResult = CreateBrandValidationSchema.safeParse(payload);
+      if (!validationResult?.success) {
+        const imageIssue = validationResult.error.issues.find(
+          (i) => i.path[0] === "image",
+        );
+        setImageError(imageIssue?.message || null);
+        return;
+      }
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+      formData.append("logo", images[0]);
+      const result = await createBrandApi(formData);
+      if (result?.success) {
+        toast.success(result?.message, {
+          position: "top-right",
+          style: {
+            color: "green",
+          },
+        });
+        //reset the form
+        form.reset();
+        setImages([]);
+        setImagePreview([]);
+        //Close the dialog
+        setOpen(false);
+      } else {
+        toast.error(result?.message, {
+          position: "top-right",
+          style: {
+            color: "red",
+          },
+        });
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Create Brand</Button>
       </DialogTrigger>
@@ -85,7 +143,7 @@ const CreateBrandModal = () => {
             form="create-brand-form"
             className="w-full mt-5"
           >
-            Create
+            {form.formState.isLoading ? "Creating.." : "Create"}
           </Button>
         </form>
       </DialogContent>

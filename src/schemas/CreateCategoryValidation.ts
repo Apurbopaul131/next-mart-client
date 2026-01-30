@@ -1,6 +1,6 @@
 import z from "zod";
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const CreateCategoryValidationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
