@@ -17,6 +17,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 import CreateCategoryModal from "./CreateCategoryModal";
 
 type TCategoryProps = {
@@ -86,7 +87,21 @@ const CreateCategory = ({ categories }: TCategoryProps) => {
     }
     try {
       const res = await deleteCategory(categoryId);
-      console.log(res);
+      if (res?.success) {
+        toast.success(res?.message, {
+          position: "top-right",
+          style: {
+            color: "green",
+          },
+        });
+      } else {
+        toast.error(res?.message, {
+          position: "top-right",
+          style: {
+            color: "red",
+          },
+        });
+      }
     } catch (err: any) {
       console.error(err);
     }
