@@ -38,7 +38,7 @@ const NMImageUploader = ({
       ></Input>
       <Label
         htmlFor="companylogo"
-        className="border-4 w-36 border-dotted border-gray-300 p-6 rounded-md hover:bg-white"
+        className="border-4 w-36 h-36 border-dotted border-gray-300 px-3 rounded-md hover:bg-white"
       >
         {label}
       </Label>
